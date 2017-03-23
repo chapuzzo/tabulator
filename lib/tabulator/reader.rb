@@ -41,6 +41,13 @@ module Tabulator
         }
       end
 
+      def apply target
+        to_a.map { |row|
+          row[target] = yield row[target]
+          row
+        }
+      end
+
       def to_json
         to_a.to_json(json_dump_options)
       end

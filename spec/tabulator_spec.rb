@@ -47,6 +47,18 @@ describe Tabulator do
         ])
       end
 
+      it 'postprocesses output hashes by key' do
+
+        worksheet = Tabulator::Reader::Worksheet.new fake_worksheet
+
+        expect(worksheet.apply(:first_title){ |x|
+          x.reverse
+        }.to_a).to eq([{
+          first_title: 'tnetnoc tsrif',
+          second_title: 'second content'
+        }])
+      end
+
     end
   end
 end

@@ -12,16 +12,17 @@ describe Tabulator do
         FakeWorksheet = Struct.new "FakeWorksheet", :rows
       }
 
-      it 'dumps as hashes array' do
-
+      let(:fake_worksheet){
         header = ['first title', 'second title']
         content = ['first content', 'second content']
 
-        fake_worksheet = FakeWorksheet.new [
+        FakeWorksheet.new [
           header,
           content
         ]
+      }
 
+      it 'dumps as hashes array' do
         worksheet = Tabulator::Reader::Worksheet.new fake_worksheet
 
         expect(worksheet.to_a).to eq([
@@ -33,11 +34,6 @@ describe Tabulator do
       end
 
       it 'serializes as JSON' do
-        fake_worksheet = FakeWorksheet.new [
-          ['first title', 'second title'],
-          ['first content', 'second content']
-        ]
-
         worksheet = Tabulator::Reader::Worksheet.new fake_worksheet
 
         expect(worksheet.to_json).to eq("[\n  {\n    \"first_title\": \"first content\",\n    \"second_title\": \"second content\"\n  }\n]")

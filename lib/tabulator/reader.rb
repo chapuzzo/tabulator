@@ -23,14 +23,18 @@ module Tabulator
         @worksheet.rows
       end
 
-      def to_json
+      def to_a
         header = rows.first.map { |raw_header_col|
           I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
         }
 
         rows.drop(1).map { |row|
           header.zip(row).to_h
-        }.to_json(json_dump_options)
+        }
+      end
+
+      def to_json
+        to_a.to_json(json_dump_options)
       end
 
       def save path

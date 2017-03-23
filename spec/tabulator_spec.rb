@@ -8,9 +8,31 @@ describe Tabulator do
 
   describe 'Reader' do
     describe '::Worksheet' do
-      it 'serializes as JSON' do
+      before(:all) {
         FakeWorksheet = Struct.new "FakeWorksheet", :rows
+      }
 
+      it 'dumps as hashes array' do
+
+        header = ['first title', 'second title']
+        content = ['first content', 'second content']
+
+        fake_worksheet = FakeWorksheet.new [
+          header,
+          content
+        ]
+
+        worksheet = Tabulator::Reader::Worksheet.new fake_worksheet
+
+        expect(worksheet.to_a).to eq([
+          {
+            first_title: 'first content',
+            second_title: 'second content'
+          }
+        ])
+      end
+
+      it 'serializes as JSON' do
         fake_worksheet = FakeWorksheet.new [
           ['first title', 'second title'],
           ['first content', 'second content']

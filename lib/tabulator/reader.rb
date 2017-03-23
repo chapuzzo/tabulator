@@ -11,19 +11,16 @@ module Tabulator
     end
 
     def [] worksheet
-      Worksheet.new @file.worksheets[worksheet]
+      Worksheet.build @file.worksheets[worksheet.rows]
     end
 
     class Worksheet
-      def initialize worksheet
-        @worksheet = worksheet
+
+      def self.build rows
+        new to_a rows
       end
 
-      def rows
-        @worksheet.rows
-      end
-
-      def to_a
+      def self.to_a rows
         header = rows.first.map { |raw_header_col|
           I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
         }
@@ -33,8 +30,12 @@ module Tabulator
         }
       end
 
+      def initialize rows
+        @rows = rows
+      end
+
       def only *cols
-        to_a.map { |row|
+        self.class.new to_a.map { |row|
           row.select { |title, _|
             cols.include? title
           }
@@ -42,10 +43,14 @@ module Tabulator
       end
 
       def apply target
-        to_a.map { |row|
+        self.class.new to_a.map { |row|
           row[target] = yield row[target]
           row
         }
+      end
+
+      def to_a
+        @rows
       end
 
       def to_json

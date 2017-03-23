@@ -33,6 +33,14 @@ module Tabulator
         }
       end
 
+      def only *cols
+        to_a.map { |row|
+          row.select { |title, _|
+            cols.include? title
+          }
+        }
+      end
+
       def to_json
         to_a.to_json(json_dump_options)
       end

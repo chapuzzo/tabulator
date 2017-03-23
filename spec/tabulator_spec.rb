@@ -38,6 +38,15 @@ describe Tabulator do
 
         expect(worksheet.to_json).to eq("[\n  {\n    \"first_title\": \"first content\",\n    \"second_title\": \"second content\"\n  }\n]")
       end
+
+      it 'filters based on column' do
+        worksheet = Tabulator::Reader::Worksheet.new fake_worksheet
+
+        expect(worksheet.only(:second_title).to_a).to eq([
+          second_title: 'second content'
+        ])
+      end
+
     end
   end
 end

@@ -11,7 +11,7 @@ module Tabulator
     end
 
     def [] worksheet
-      Worksheet.build @file.worksheets[worksheet.rows]
+      Worksheet.build @file.worksheets[worksheet].rows
     end
 
     class Worksheet

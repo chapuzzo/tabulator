@@ -65,6 +65,17 @@ describe Tabulator do
         }])
       end
 
+      it 'filters do not modify parent' do
+        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
+
+        second_column_hash = worksheet.apply(:second_title){|col| {a:[5], b:9, c:10}}
+        modified_second_column_hash = second_column_hash.apply(:second_title){|col| col[:a] << 1; col}
+
+        expect(worksheet.to_a[0][:second_title]).to eq 'second content'
+        expect(second_column_hash.to_a[0][:second_title]).to eq({a:[5], b:9, c:10})
+        expect(modified_second_column_hash.to_a[0][:second_title]).to eq({a:[5, 1], b:9, c:10})
+      end
+
     end
   end
 end

@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "google_drive", "~> 2.1.2"
   spec.add_dependency "i18n", "~> 0.7.0"
+  spec.add_dependency "ruby_deep_clone", "~> 0.7.2"
 
   spec.add_development_dependency "bundler", "~> 1.13"
   spec.add_development_dependency "rake", "~> 10.0"

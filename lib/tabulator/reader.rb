@@ -1,6 +1,7 @@
 require 'google_drive'
 require 'json'
 require 'i18n'
+require 'deep_clone'
 I18n.enforce_available_locales = false
 
 module Tabulator
@@ -50,7 +51,7 @@ module Tabulator
       end
 
       def to_a
-        @rows
+        DeepClone.clone(@rows)
       end
 
       def to_json

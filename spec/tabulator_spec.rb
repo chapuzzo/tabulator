@@ -9,7 +9,7 @@ describe Tabulator do
   describe 'Reader' do
     describe '::Worksheet' do
 
-      let(:fake_worksheet){
+      let(:single_line_worksheet_data){
         header = ['first title', 'second title']
         content = ['first content', 'second content']
 
@@ -19,10 +19,20 @@ describe Tabulator do
         ]
       }
 
-      it 'dumps as hashes array' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
+      let(:single_line_worksheet){
+        Tabulator::Reader::Worksheet.build single_line_worksheet_data
+      }
 
-        expect(worksheet.to_a).to eq([
+      let(:two_lines_worksheet_data){
+        [
+          ['first title', 'second title'],
+          ['first content', 'second content'],
+          ['first other content', 'second other content']
+        ]
+      }
+
+      it 'dumps as hashes array' do
+        expect(single_line_worksheet.to_a).to eq([
           {
             first_title: 'first content',
             second_title: 'second content'
@@ -31,23 +41,17 @@ describe Tabulator do
       end
 
       it 'serializes as JSON' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
-
-        expect(worksheet.to_json).to eq("[\n  {\n    \"first_title\": \"first content\",\n    \"second_title\": \"second content\"\n  }\n]")
+        expect(single_line_worksheet.to_json).to eq("[\n  {\n    \"first_title\": \"first content\",\n    \"second_title\": \"second content\"\n  }\n]")
       end
 
       it 'filters based on column' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
-
-        expect(worksheet.only(:second_title).to_a).to eq([
+        expect(single_line_worksheet.only(:second_title).to_a).to eq([
           second_title: 'second content'
         ])
       end
 
       it 'postprocesses output hashes by key' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
-
-        expect(worksheet.apply(:first_title){ |x|
+        expect(single_line_worksheet.apply(:first_title){ |x|
           x.reverse
         }.to_a).to eq([{
           first_title: 'tnetnoc tsrif',
@@ -56,9 +60,7 @@ describe Tabulator do
       end
 
       it 'filters are chainable' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
-
-        expect(worksheet.only(:first_title).apply(:first_title){ |x|
+        expect(single_line_worksheet.only(:first_title).apply(:first_title){ |x|
           x.reverse
         }.to_a).to eq([{
           first_title: 'tnetnoc tsrif'
@@ -66,14 +68,21 @@ describe Tabulator do
       end
 
       it 'filters do not modify parent' do
-        worksheet = Tabulator::Reader::Worksheet.build fake_worksheet
-
-        second_column_hash = worksheet.apply(:second_title){|col| {a:[5], b:9, c:10}}
+        second_column_hash = single_line_worksheet.apply(:second_title){|col| {a:[5], b:9, c:10}}
         modified_second_column_hash = second_column_hash.apply(:second_title){|col| col[:a] << 1; col}
 
-        expect(worksheet.to_a[0][:second_title]).to eq 'second content'
+        expect(single_line_worksheet.to_a[0][:second_title]).to eq 'second content'
         expect(second_column_hash.to_a[0][:second_title]).to eq({a:[5], b:9, c:10})
         expect(modified_second_column_hash.to_a[0][:second_title]).to eq({a:[5, 1], b:9, c:10})
+      end
+
+      it 'header row is selectable' do
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build(two_lines_worksheet_data)
+
+        expect(two_lines_worksheet.to_a.length).to eq(2)
+
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build(two_lines_worksheet_data, 1)
+        expect(two_lines_worksheet.to_a.length).to eq(1)
       end
 
     end

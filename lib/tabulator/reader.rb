@@ -1,7 +1,6 @@
 require 'google_drive'
 require 'json'
 require 'i18n'
-require 'deep_clone'
 I18n.enforce_available_locales = false
 
 module Tabulator
@@ -17,16 +16,16 @@ module Tabulator
 
     class Worksheet
 
-      def self.build rows
-        new to_a rows
+      def self.build rows, header = 0
+        new to_a(rows, header)
       end
 
-      def self.to_a rows
-        header = rows.first.map { |raw_header_col|
+      def self.to_a rows, header_row
+        header = rows[header_row].map { |raw_header_col|
           I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
         }
 
-        rows.drop(1).map { |row|
+        rows.drop(header_row + 1).map { |row|
           header.zip(row).to_h
         }
       end
@@ -51,7 +50,7 @@ module Tabulator
       end
 
       def to_a
-        DeepClone.clone(@rows)
+        Marshal.load(Marshal.dump(@rows))
       end
 
       def to_json

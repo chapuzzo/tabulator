@@ -16,17 +16,16 @@ module Tabulator
 
     class Worksheet
 
-      def self.build rows, header = 0
-        new to_a(rows, header)
-      end
+      def self.build rows, **options
+        header = options[:header] || 0
+        skip = options[:skip] || header + 1
 
-      def self.to_a rows, header_row
-        header = rows[header_row].map { |raw_header_col|
+        header_row = rows[header].map { |raw_header_col|
           I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
         }
 
-        rows.drop(header_row + 1).map { |row|
-          header.zip(row).to_h
+        new rows.drop(skip).map { |row|
+          header_row.zip(row).to_h
         }
       end
 

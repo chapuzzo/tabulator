@@ -77,11 +77,7 @@ describe Tabulator do
       end
 
       it 'header row is selectable' do
-        two_lines_worksheet = Tabulator::Reader::Worksheet.build(two_lines_worksheet_data)
-
-        expect(two_lines_worksheet.to_a.length).to eq(2)
-
-        two_lines_worksheet = Tabulator::Reader::Worksheet.build(two_lines_worksheet_data, 1)
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build(two_lines_worksheet_data, header: 1)
         expect(two_lines_worksheet.to_a.length).to eq(1)
       end
 

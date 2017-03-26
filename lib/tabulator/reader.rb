@@ -23,7 +23,7 @@ module Tabulator
         rejected_rows = *options[:reject]
 
         rejected_rows.each { |row_index|
-          rows.delete_at row_index
+          rows.slice! row_index
         }
 
         header_row = rows[header].map { |raw_header_col|

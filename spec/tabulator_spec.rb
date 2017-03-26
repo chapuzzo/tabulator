@@ -107,6 +107,24 @@ describe Tabulator do
         expect(worksheet.to_a.length).to eq(2)
       end
 
+      it 'skips multiple rejected rows by condition' do
+        garbage_trailing_worksheet_data = [
+          ['title', 'other title'],
+          ['data', 'other data'],
+          ['nothing', 'related', 'with', 'table'],
+          ['more data', 'other more data'],
+          ['nothing', 'related', 'with', 'table'],
+          ['nothing', 'related', 'with', 'table'],
+          ['nothing', 'related', 'with', 'table']
+        ]
+
+        worksheet = Tabulator::Reader::Worksheet.build garbage_trailing_worksheet_data,
+          reject: lambda{ |x| x.include? 'nothing'}
+
+
+        expect(worksheet.to_a.length).to eq(2)
+      end
+
     end
   end
 end

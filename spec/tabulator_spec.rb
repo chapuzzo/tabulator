@@ -81,6 +81,19 @@ describe Tabulator do
         expect(two_lines_worksheet.to_a.length).to eq(1)
       end
 
+      it 'unused header rows can be skipped' do
+        garbage_leading_worksheet_data = [
+          ['nothing', 'related', 'with', 'table'],
+          ['title', 'other title'],
+          ['nothing', 'related', 'with', 'table'],
+          ['data', 'other data'],
+          ['more data', 'other more data']
+        ]
+
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build(garbage_leading_worksheet_data, header: 1, skip: 3)
+        expect(two_lines_worksheet.to_a.length).to eq(2)
+      end
+
       it 'skips rejected row by index' do
         garbage_trailing_worksheet_data = [
           ['title', 'other title'],

@@ -20,6 +20,12 @@ module Tabulator
         header = options[:header] || 0
         skip = options[:skip] || header + 1
 
+        rejected_rows = *options[:reject]
+
+        rejected_rows.each { |row_index|
+          rows.delete_at row_index
+        }
+
         header_row = rows[header].map { |raw_header_col|
           I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
         }

@@ -81,6 +81,18 @@ describe Tabulator do
         expect(two_lines_worksheet.to_a.length).to eq(1)
       end
 
+      it 'skips selected rows' do
+        garbage_trailing_worksheet_data = [
+          ['title', 'other title'],
+          ['data', 'other data'],
+          ['nothing', 'related', 'with', 'table']
+        ]
+
+        worksheet = Tabulator::Reader::Worksheet.build garbage_trailing_worksheet_data, reject: 2
+        ap worksheet.to_a
+        expect(worksheet.to_a.length).to eq(1)
+      end
+
     end
   end
 end

@@ -203,6 +203,17 @@ describe Tabulator do
         }
       end
 
+      it 'sanitizes dup headers' do
+        worksheet_data = [
+          ['header', 'header', 'header'],
+          ['content', 'more content', 'other more content']
+        ]
+
+        worksheet = Tabulator::Reader::Worksheet.build worksheet_data
+
+        expect(worksheet.to_a.first.length).to eq(worksheet_data.first.length)
+      end
+
     end
   end
 end

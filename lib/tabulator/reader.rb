@@ -27,13 +27,29 @@ module Tabulator
           rows.slice! index_definition
         }
 
-        header_row = rows[header].map { |raw_header_col|
-          I18n.transliterate(raw_header_col.strip.gsub(/\s/, '_')).downcase.to_sym
+        header_row = rows[header].reduce([]) { |accepted_headers, raw_header_col|
+          accepted_headers << safe_generate_header(raw_header_col, accepted_headers)
         }
 
         new rows.drop(skip).map { |row|
           header_row.zip(row).to_h
         }
+      end
+
+      def self.generate_header text
+        I18n.transliterate(text.strip.gsub(/\s/, '_')).downcase.to_sym
+      end
+
+      def self.safe_generate_header text, headers
+        candidate = generate_header(text)
+        suffix = 1
+
+        while headers.include? candidate
+          candidate = generate_header([text, suffix].join('_'))
+          suffix += 1
+        end
+
+        candidate
       end
 
       def initialize rows

@@ -93,7 +93,12 @@ module Tabulator
 
       private
         def json_dump_options
-          JSON::Ext::Generator::State.new indent: '  ', space: ' ', object_nl: "\n", array_nl: "\n"
+          {
+            indent: '  ',
+            space: ' ',
+            object_nl: "\n",
+            array_nl: "\n"
+          }
         end
     end
   end

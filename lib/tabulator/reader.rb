@@ -10,8 +10,8 @@ module Tabulator
       @file = session.spreadsheet_by_key(file_key)
     end
 
-    def [] worksheet
-      Worksheet.build @file.worksheets[worksheet].rows
+    def [] worksheet, **options
+      Worksheet.build @file.worksheets[worksheet].rows, **options
     end
 
     class Worksheet

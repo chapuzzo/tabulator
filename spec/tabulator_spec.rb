@@ -134,8 +134,20 @@ describe Tabulator do
         worksheet = Tabulator::Reader::Worksheet.build garbage_trailing_worksheet_data,
           reject: lambda{ |x| x.include? 'nothing'}
 
-
         expect(worksheet.to_a.length).to eq(2)
+      end
+
+      it 'filters out generated rows by condition' do
+        garbage_trailing_worksheet_data = [
+          ['title', 'other title'],
+          ['normal data', 'other normal data'],
+          ['more normal data', 'other more normal data'],
+          ['not normal data', 'other not normal data']
+        ]
+
+        worksheet = Tabulator::Reader::Worksheet.build garbage_trailing_worksheet_data
+
+        expect(worksheet.reject{ |x| x[:title].include? 'not'}.to_a.length).to eq(2)
       end
 
     end

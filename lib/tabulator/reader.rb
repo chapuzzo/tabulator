@@ -55,6 +55,12 @@ module Tabulator
         }
       end
 
+      def reject
+        self.class.new to_a.reject { |row|
+          yield row
+        }
+      end
+
       def to_a
         Marshal.load(Marshal.dump(@rows))
       end

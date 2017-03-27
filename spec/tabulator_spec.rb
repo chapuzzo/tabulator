@@ -150,6 +150,59 @@ describe Tabulator do
         expect(worksheet.reject{ |x| x[:title].include? 'not'}.to_a.length).to eq(2)
       end
 
+      it 'can generate new key/values' do
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build two_lines_worksheet_data
+
+        added_reversed_first_title = two_lines_worksheet.apply(:reversed_first_title){ |_, row|
+          row[:first_title].reverse
+        }
+
+        expect(added_reversed_first_title.to_a.first.length).to eq(3)
+        expect(added_reversed_first_title.to_a.first[:reversed_first_title]).to eq(
+          added_reversed_first_title.to_a.first[:first_title].reverse
+        )
+      end
+
+
+      it 'can generate new objects as values & pass them through filters' do
+        class SampleClass
+          def initialize xx
+            @xx = xx
+          end
+
+          def rev
+            @xx.reverse
+          end
+
+          def to_h
+            {
+              content: @xx,
+              reverse: rev
+            }
+          end
+
+          def to_json *json_dump_options
+            to_h.to_json *json_dump_options
+          end
+        end
+
+        two_lines_worksheet = Tabulator::Reader::Worksheet.build two_lines_worksheet_data
+
+        object_added_worksheet = two_lines_worksheet.apply(:new_row){ |_, row|
+          SampleClass.new [row.to_s, rand.to_s].join(' - ')
+        }
+
+        filtered_object_added_worksheet = object_added_worksheet.only(:new_row)
+
+        expect(filtered_object_added_worksheet.to_a.length).to eq(2)
+        filtered_object_added_worksheet.to_a.all? { |e|
+          expect(e.length).to eq(1)
+          expect(e[:new_row].to_h.length).to eq(2)
+          expect(e[:new_row].to_h.keys).to eq([:content, :reverse])
+          expect(e[:new_row].to_h[:content]).to eq(e[:new_row].to_h[:reverse].reverse)
+        }
+      end
+
     end
   end
 end

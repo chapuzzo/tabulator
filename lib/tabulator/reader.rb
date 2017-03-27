@@ -50,7 +50,7 @@ module Tabulator
 
       def apply target
         self.class.new to_a.map { |row|
-          row[target] = yield row[target]
+          row[target] = yield row[target], row
           row
         }
       end

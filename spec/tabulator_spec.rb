@@ -203,7 +203,7 @@ describe Tabulator do
         }
       end
 
-      it 'sanitizes dup headers' do
+      it 'dedups headers with _n suffix' do
         worksheet_data = [
           ['header', 'header', 'header'],
           ['content', 'more content', 'other more content']
@@ -213,6 +213,8 @@ describe Tabulator do
 
         expect(worksheet.to_a.first.length).to eq(worksheet_data.first.length)
       end
+
+
 
     end
   end

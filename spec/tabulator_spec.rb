@@ -214,7 +214,15 @@ describe Tabulator do
         expect(worksheet.to_a.first.length).to eq(worksheet_data.first.length)
       end
 
+      it 'allows json dump customization' do
+        generated_json = single_line_worksheet.to_json indent: '', space: '', object_nl: '', array_nl: ''
 
+        expect(generated_json).to eq('[{"first_title":"first content","second_title":"second content"}]')
+
+        generated_json = single_line_worksheet.to_json JSON::Ext::Generator::State.new indent: '', space: '', object_nl: '', array_nl: ''
+
+        expect(generated_json).to eq('[{"first_title":"first content","second_title":"second content"}]')
+      end
 
     end
   end

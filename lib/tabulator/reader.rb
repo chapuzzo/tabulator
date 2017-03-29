@@ -81,8 +81,8 @@ module Tabulator
         Marshal.load(Marshal.dump(@rows))
       end
 
-      def to_json
-        to_a.to_json(json_dump_options)
+      def to_json **dump_options
+        to_a.to_json(json_dump_options.merge dump_options)
       end
 
       def save path
